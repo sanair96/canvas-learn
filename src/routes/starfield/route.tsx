@@ -36,11 +36,11 @@ interface StarFieldSettings {
 
 const DEFAULT_SETTINGS: StarFieldSettings = {
   forceDirection: "attract",
-  numStars: 10_000,
+  numStars: 3000,
   influenceRadius: 50,
   innerInfluenceRadius: 10,
-  maxAcceleration: 100,
-  dampingFactor: 0.9,
+  maxAcceleration: 1000,
+  dampingFactor: 0.05,
 }
 
 const getSliderValue = (value: number | readonly number[]) =>
