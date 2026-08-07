@@ -1,21 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useDeferredValue, useState } from "react"
+import { createFileRoute } from "@tanstack/react-router";
+import { useDeferredValue, useState } from "react";
 
-import { StarField } from "./-component/StarField"
-
-import { Label } from "#/components/ui/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "#/components/ui/radio-group"
-import { Slider } from "#/components/ui/slider"
+import ThemeToggle from "#/components/ThemeToggle";
 import {
   Field,
   FieldDescription,
   FieldLegend,
   FieldSet,
-} from "#/components/ui/field"
-import ThemeToggle from "#/components/ThemeToggle"
+} from "#/components/ui/field";
+import { Label } from "#/components/ui/label";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "#/components/ui/radio-group";
+import { Slider } from "#/components/ui/slider";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { StarField } from "./-component/StarField";
+import { Separator } from "#/components/ui/separator";
 
 export const Route = createFileRoute("/starfield")({
   component: RouteComponent,
@@ -41,12 +43,14 @@ const DEFAULT_SETTINGS: StarFieldSettings = {
   dampingFactor: 0.9,
 }
 
-const getSliderValue = (value: number | number[]) =>
+const getSliderValue = (value: number | readonly number[]) =>
   Array.isArray(value) ? value[0] : value
 
 function RouteComponent() {
   const [settings, setSettings] =
     useState<StarFieldSettings>(DEFAULT_SETTINGS)
+  const [expanded, setExpanded] = useState<boolean>(true)
+
 
   const deferredNumStars = useDeferredValue(settings.numStars)
 
@@ -60,6 +64,7 @@ function RouteComponent() {
     }))
   }
 
+
   return (
     <div className="relative min-h-screen grid">
       <StarField
@@ -68,90 +73,124 @@ function RouteComponent() {
         innerInfluenceRadius={settings.innerInfluenceRadius}
         numStars={deferredNumStars}
         maxAcceleration={settings.maxAcceleration}
-        dampingFactor={settings.dampingFactor}
+        dampingFactor={1-settings.dampingFactor}
       />
 
-      <div className="absolute top-4 left-4 z-10 w-80 rounded-xl border bg-background text-foreground p-5 backdrop-blur">
-        <FieldSet>
-          <FieldLegend className="w-full flex justify-between items-center"><span>Starfield Controls</span><span><ThemeToggle/></span></FieldLegend>
+      <div className="absolute top-4 right-4 z-10 w-80 rounded-xl border bg-background text-foreground backdrop-blur">
+        <FieldSet className="gap-0">
+          <FieldLegend className="w-full flex justify-between items-center px-5 pt-5"><span>Starfield Controls</span><span><ThemeToggle /></span></FieldLegend>
+          <Separator />
+          <motion.div
+            className="overflow-hidden"
+            animate={{
+              height: expanded ? 'auto' : 0,
+            }}
+          >
 
-          <Field>
-            <Label>Force direction</Label>
+            <motion.div className="flex flex-col gap-4 p-5">
 
-            <RadioGroup
-              className="flex gap-4"
-              value={settings.forceDirection}
-              onValueChange={(value) =>
-                updateSetting("forceDirection", value as ForceType)
-              }
-            >
-              <div className="flex items-center gap-2">
-                <RadioGroupItem value="attract" id="attract" />
-                <Label htmlFor="attract">Attract</Label>
-              </div>
+              <Field className="">
+                <Label>Force direction</Label>
 
-              <div className="flex items-center gap-2">
-                <RadioGroupItem value="repel" id="repel" />
-                <Label htmlFor="repel">Repel</Label>
-              </div>
-            </RadioGroup>
-          </Field>
+                <RadioGroup
+                  className="flex gap-4"
+                  value={settings.forceDirection}
+                  onValueChange={(value) =>
+                    updateSetting("forceDirection", value as ForceType)
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="attract" id="attract" />
+                    <Label htmlFor="attract">Attract</Label>
+                  </div>
 
-          <SliderField
-            label="Number of stars"
-            value={settings.numStars}
-            min={100}
-            max={15_000}
-            step={100}
-            onChange={(value) => updateSetting("numStars", value)}
-          />
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="repel" id="repel" />
+                    <Label htmlFor="repel">Repel</Label>
+                  </div>
+                </RadioGroup>
+              </Field>
 
-          <SliderField
-            label="Influence radius"
-            value={settings.influenceRadius}
-            min={10}
-            max={300}
-            step={1}
-            suffix="px"
-            onChange={(value) =>
-              updateSetting("influenceRadius", value)
-            }
-          />
+              <SliderField
+                label="Number of stars"
+                value={settings.numStars}
+                min={100}
+                max={15_000}
+                step={100}
+                onChange={(value) => updateSetting("numStars", value)}
+              />
 
-          <SliderField
-            label="Inner influence radius"
-            value={settings.innerInfluenceRadius}
-            min={0}
-            max={settings.influenceRadius}
-            step={1}
-            suffix="px"
-            onChange={(value) =>
-              updateSetting("innerInfluenceRadius", value)
-            }
-          />
+              <SliderField
+                label="Influence radius"
+                value={settings.influenceRadius}
+                min={10}
+                max={300}
+                step={1}
+                suffix="px"
+                onChange={(value) =>
+                  updateSetting("influenceRadius", value)
+                }
+              />
 
-          <SliderField
-            label="Max acceleration"
-            value={settings.maxAcceleration}
-            min={0}
-            max={2_000}
-            step={10}
-            onChange={(value) =>
-              updateSetting("maxAcceleration", value)
-            }
-          />
+              <SliderField
+                label="Inner influence radius"
+                value={settings.innerInfluenceRadius}
+                min={0}
+                max={settings.influenceRadius}
+                step={1}
+                suffix="px"
+                onChange={(value) =>
+                  updateSetting("innerInfluenceRadius", value)
+                }
+              />
 
-          <SliderField
-            label="Damping factor"
-            value={settings.dampingFactor}
-            min={0}
-            max={1}
-            step={0.01}
-            formatValue={(value) => value.toFixed(2)}
-            onChange={(value) =>
-              updateSetting("dampingFactor", value)
-            }
-          />
+              <SliderField
+                label="Max acceleration"
+                value={settings.maxAcceleration}
+                min={0}
+                max={2_000}
+                step={10}
+                onChange={(value) =>
+                  updateSetting("maxAcceleration", value)
+                }
+              />
+
+              <SliderField
+                label="Damping factor"
+                value={settings.dampingFactor}
+                min={0}
+                max={1}
+                step={0.01}
+                formatValue={(value) => value.toFixed(2)}
+                onChange={(value) =>
+                  updateSetting("dampingFactor", value)
+                }
+              />
+            </motion.div>
+          </motion.div>
+
+          <Separator className="m-0 p-0" />
+          <motion.button className="w-full h-full flex text-foreground items-center justify-center hover:bg-gray-100 active:bg-gray-200 transition-all rounded-sm py-2 rounded-t-none"
+            whileTap={{
+              scale: 0.98
+            }}
+            onClick={() => setExpanded(prevState => !prevState)}
+          >
+            <AnimatePresence mode="popLayout">
+              {expanded && <motion.span
+                initial={{ translateY: -10, opacity: 0 }}
+                animate={{ translateY: 0, opacity: 1 }}
+
+                exit={{ translateY: -10, opacity: 0 }}><ChevronUp /></motion.span>}
+            </AnimatePresence>
+            <AnimatePresence mode="popLayout">
+              {!expanded && <motion.span
+                initial={{ translateY: 10, opacity: 0 }}
+                animate={{ translateY: 0, opacity: 1 }}
+                exit={{ translateY: 10, opacity: 0 }}><ChevronDown /></motion.span>}
+            </AnimatePresence>
+
+          </motion.button>
         </FieldSet>
       </div>
     </div>
@@ -198,7 +237,7 @@ function SliderField({
         max={max}
         step={step}
         onValueChange={(value) => {
-          onChange(getSliderValue(value as number))
+          onChange(getSliderValue(value))
         }}
       />
     </Field>

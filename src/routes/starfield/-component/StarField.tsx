@@ -20,7 +20,13 @@ interface StarFieldProps {
     innerInfluenceRadius: number;
 }
 
-export const StarField = ({ forceDirection = 'attract', numStars = 3000, influenceRadius = 50, maxAcceleration = 300, dampingFactor = 0.9, innerInfluenceRadius = 50 }: StarFieldProps) => {
+export const StarField = ({
+    forceDirection = 'attract',
+    numStars = 3000, influenceRadius = 50,
+    maxAcceleration = 300,
+    dampingFactor = 0.9,
+    innerInfluenceRadius = 50
+}: StarFieldProps) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameId = useRef<number | null>(null);
@@ -40,7 +46,7 @@ export const StarField = ({ forceDirection = 'attract', numStars = 3000, influen
         let height = container.clientHeight;
         const stars = starList.current
 
-        if(stars.length>numStars) {
+        if (stars.length > numStars) {
             starList.current = stars.slice(0, numStars);
             return;
         }
@@ -187,7 +193,12 @@ export const StarField = ({ forceDirection = 'attract', numStars = 3000, influen
             timeRef.current = null;
         };
 
-    }, [forceDirection, numStars])
+    }, [forceDirection,
+        numStars,
+        influenceRadius,
+        maxAcceleration,
+        dampingFactor,
+        innerInfluenceRadius])
 
     return <div ref={canvasContainer} className="w-full h-full relative ">
         <canvas className="w-full h-full absolute " ref={canvasRef}>
