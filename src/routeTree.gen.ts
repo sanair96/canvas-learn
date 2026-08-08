@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as PracticeRouteRouteImport } from './routes/practice/route'
 import { Route as StarfieldRouteRouteImport } from './routes/starfield/route'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PracticeRouteRoute = PracticeRouteRouteImport.update({
+  id: '/practice',
+  path: '/practice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StarfieldRouteRoute = StarfieldRouteRouteImport.update({
   id: '/starfield',
   path: '/starfield',
@@ -31,30 +37,34 @@ const StarfieldRouteRoute = StarfieldRouteRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/practice': typeof PracticeRouteRoute
   '/starfield': typeof StarfieldRouteRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/practice': typeof PracticeRouteRoute
   '/starfield': typeof StarfieldRouteRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/practice': typeof PracticeRouteRoute
   '/starfield': typeof StarfieldRouteRoute
   '/about': typeof AboutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/starfield' | '/about'
+  fullPaths: '/' | '/practice' | '/starfield' | '/about'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/starfield' | '/about'
-  id: '__root__' | '/' | '/starfield' | '/about'
+  to: '/' | '/practice' | '/starfield' | '/about'
+  id: '__root__' | '/' | '/practice' | '/starfield' | '/about'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PracticeRouteRoute: typeof PracticeRouteRoute
   StarfieldRouteRoute: typeof StarfieldRouteRoute
   AboutRoute: typeof AboutRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/practice': {
+      id: '/practice'
+      path: '/practice'
+      fullPath: '/practice'
+      preLoaderRoute: typeof PracticeRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/starfield': {
       id: '/starfield'
       path: '/starfield'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PracticeRouteRoute: PracticeRouteRoute,
   StarfieldRouteRoute: StarfieldRouteRoute,
   AboutRoute: AboutRoute,
 }

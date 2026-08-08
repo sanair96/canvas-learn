@@ -148,11 +148,16 @@ export const StarField = ({
                 updateStar(star, pointerPosRef.current, deltaTime);
                 if (star.y > canvas.clientHeight) {
                     star.y = 0;
-                    star.x = Math.random() * canvas.width;
+                } else if(star.y<=0) {
+                    star.y = canvas.clientHeight;
+                    star.x = canvas.clientWidth - star.x;
                 }
                 if (star.x > canvas.clientWidth) {
                     star.x = 0;
-                    star.y = Math.random() * canvas.height;
+                } else if (star.x<=0){
+                    star.x=canvas.clientWidth
+                    star.y = canvas.clientHeight - star.x;
+
                 }
             });
 

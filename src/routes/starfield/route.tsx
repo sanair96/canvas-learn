@@ -16,7 +16,7 @@ import {
 import { Slider } from "#/components/ui/slider";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { StarField } from "./-component/StarField";
+import { StarField } from "./-component/-StarField";
 import { Separator } from "#/components/ui/separator";
 
 export const Route = createFileRoute("/starfield")({
